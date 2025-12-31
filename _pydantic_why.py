@@ -1,14 +1,16 @@
 from pydantic import BaseModel, EmailStr, AnyUrl, Field 
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Annotated
 class Patient(BaseModel):
 
-    name: str = Field(max_length=30)
+    name: Annotated[str, Field(max_length=50, title='name of th epatient',
+                                description='gin=ve the name of the patient in less than 50 char', 
+                                example=['Mohammad'])]
     age: int = Field(gt=18, lt=45)
     email: EmailStr
     linkedin_url: AnyUrl
-    weight: float = Field(gt=0)
-    married: bool
-    allergis: Optional[List[str]] = None
+    weight: Annotated[float, Field(gt=18, strict=True)]
+    married: Annotated[bool, Field(default=None, description='is the patient married or not')]
+    allergis: Annotated[Optional[List[str]],Field(default=None, max_length=5)]
     contact_details: Dict[str, str]
 
 
