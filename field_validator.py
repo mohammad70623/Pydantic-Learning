@@ -2,16 +2,27 @@ from pydantic import BaseModel, EmailStr, AnyUrl, Field , field_validator
 from typing import List, Dict, Optional, Annotated
 class Patient(BaseModel):
 
-    name: Annotated[str, Field(max_length=50, title='name of th epatient',
-                                description='gin=ve the name of the patient in less than 50 char', 
-                                example=['Mohammad'])]
-    age: int = Field(gt=18, lt=45)
+    name: str 
+    age: int 
     email: EmailStr
     linkedin_url: AnyUrl
-    weight: Annotated[float, Field(gt=18, strict=True)]
-    married: Annotated[bool, Field(default=None, description='is the patient married or not')]
-    allergis: Annotated[Optional[List[str]],Field(default=None, max_length=5)]
-    contact_details: Dict[str, str]
+    weight: float 
+    married: bool
+    allergis: List[str] 
+
+    @field_validator('email')
+    @classmethod
+    def email_validator(cls, value):
+
+        valid_domain =['hdfc.com', 'icici.com']
+
+        domain_name = value.split('@')[-1]
+
+        if domain_name not in valid_domain:
+            raise ValueError('Not a valid Domain')
+        
+        return value
+
 
 
 
@@ -39,7 +50,7 @@ patient_info = {'name': 'Mohammad',
                 'age': 30, 
                 'weight': 57.5,
                 'married': False,
-                'email': 'mohammad70623@gmail.com',
+                'email': 'mohammad70623@hdfc.com',
                 'linkedin_url': 'https://www.linkedin.com/in/mohammad-51a10a287/',
                 'allergis':['dust', 'pollen'], 
                 'contact_details': {
